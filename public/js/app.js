@@ -219,6 +219,8 @@ $('#btn-tela').addEventListener('click', async () => {
   if (!sala) return;
   if (estado.tela) { sala.pararTela(); return; }
   try {
+    sala.adaptador.modo = $('#modo').value;
+    sala.adaptador.ativo = $('#auto').checked;
     const r = await sala.iniciarTela($('#preset').value, $('#hint').value);
     estado.tela = true;
     marcar('#btn-tela', true);
@@ -237,7 +239,8 @@ $('#btn-tela').addEventListener('click', async () => {
 
 $('#preset').addEventListener('change', (ev) => { if (sala) sala.mudarPreset(ev.target.value); });
 $('#hint').addEventListener('change', (ev) => { if (sala) sala.definirHint(ev.target.value); });
-$('#auto').addEventListener('change', (ev) => { if (sala) sala.adaptador.ativo = ev.target.checked; });
+$('#auto').addEventListener('change', (ev) => { if (sala) sala.adaptador.definirAtivo(ev.target.checked); });
+$('#modo').addEventListener('change', (ev) => { if (sala) sala.adaptador.definirModo(ev.target.value); });
 
 $('#btn-mic').addEventListener('click', async () => {
   if (!sala) return;

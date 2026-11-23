@@ -1,5 +1,5 @@
 import { CONFIG, ICE_SERVERS } from './config.js';
-import { PRESETS, preferirCodecs, lerStats, Adaptador, aplicarParametros } from './qualidade.js';
+import { PRESETS, transformarSDP, lerStats, Adaptador, aplicarParametros } from './qualidade.js';
 
 const ALFABETO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
@@ -179,7 +179,11 @@ export class Sala {
     const antiga = par.chamadas.get(kind);
     if (antiga) { par.chamadas.delete(kind); try { antiga.close(); } catch (_) { /* ignora */ } }
     if (!stream || !stream.getTracks().length) return;
-    const call = this.peer.call(id, stream, { metadata: { kind, nome: this.nome }, sdpTransform: preferirCodecs });
+    const pr = PRESETS[this.presetId];
+    const opcoes = kind === 'tela'
+      ? { min: 500, inicio: Math.round(pr.bitrate * 0.6 / 1000), max: Math.round(pr.bitrate * 1.5 / 1000) }
+      : { min: 100, inicio: 1500, max: 4000 };
+    const call = this.peer.call(id, stream, { metadata: { kind, nome: this.nome }, sdpTransform: (sdp) => transformarSDP(sdp, opcoes) });
     if (!call) return;
     par.chamadas.set(kind, call);
     call.on('close', () => { if (par.chamadas.get(kind) === call) par.chamadas.delete(kind); });
@@ -197,7 +201,7 @@ export class Sala {
     const nome = String((call.metadata && call.metadata.nome) || 'Participante').slice(0, 24);
     const chave = call.peer + ':' + kind;
     this.recebidas.set(chave, call);
-    call.answer();
+    call.answer(undefined, { sdpTransform: (sdp) => transformarSDP(sdp) });
     call.on('stream', (s) => this.ui.aoFluxo(kind, s, call.peer, nome));
     call.on('close', () => {
       if (this.recebidas.get(chave) === call) this.recebidas.delete(chave);
@@ -316,7 +320,7 @@ export class Sala {
       const pc = call && call.peerConnection;
       if (!pc) return;
       pc.getSenders().filter((s) => s.track && s.track.kind === 'video')
-        .forEach((s) => aplicarParametros(s, preset, this.adaptador.nivel).catch(() => {}));
+        .forEach((s) => aplicarParametros(s, preset, this.adaptador.atual, this.adaptador.degradacao).catch(() => {}));
     });
   }
 
@@ -330,7 +334,7 @@ export class Sala {
     else this.recebidas.forEach((c, k) => { if (k.endsWith(':tela')) alvos.push(c); });
     if (!alvos.length) { this.ui.aoStats(null, 0); return; }
     let ref = null;
-    const pior = { perda: 0, limite: 'none' };
+    const pior = { perda: 0, banda: false, cpu: false };
     for (const c of alvos) {
       const pc = c.peerConnection;
       if (!pc) continue;
@@ -346,7 +350,11 @@ export class Sala {
         perda = dp + dr > 0 ? Math.max(0, dp) / (dp + dr) : 0;
       }
       pior.perda = Math.max(pior.perda, perda);
-      if (s.limite === 'bandwidth' || s.limite === 'cpu') pior.limite = s.limite;
+      if (s.dir === 'tx') {
+        const alvoKbps = (PRESETS[this.presetId].bitrate * this.adaptador.atual.br) / 1000;
+        if (s.limite === 'bandwidth' && kbps < alvoKbps * 0.6) pior.banda = true;
+        if (s.limite === 'cpu') pior.cpu = true;
+      }
       if (!ref || kbps > ref.kbps) ref = { w: s.w, h: s.h, fps: s.fps, kbps };
     }
     this.ui.aoStats(ref, this.adaptador.nivel);

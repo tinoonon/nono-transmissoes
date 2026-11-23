@@ -115,6 +115,12 @@
               <option value="detail">Detalhe (texto, código)</option>
             </select></div>
         </div>
+        <label for="modo">Se a rede piorar, priorizar</label>
+        <select id="modo">
+          <option value="balanceado">Equilíbrio (reduz um pouco de resolução e fps)</option>
+          <option value="nitidez">Nitidez (mantém a resolução, reduz fps)</option>
+          <option value="fluidez">Fluidez (mantém o fps, reduz resolução)</option>
+        </select>
         <label class="check"><input id="auto" type="checkbox" checked> Reduzir a qualidade automaticamente se a rede piorar</label>
         <p class="mudo pequeno">Preferência de codec: AV1, depois VP9, depois H.264. O navegador escolhe o primeiro que ambos suportam.</p>
       </section>
