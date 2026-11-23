@@ -1,6 +1,6 @@
 # Nono Transmissões
 
-Transmissão de tela em tempo real, P2P, para até 3 pessoas (1 transmissor e 2 espectadores). Site 100% estático (HTML, CSS e JavaScript com ES modules), sem backend e sem framework. WebRTC para a mídia e PeerJS (servidor público) apenas para a sinalização.
+Transmissão de tela em tempo real, P2P, para até 3 pessoas (1 transmissor e 2 espectadores). Site 100% estático (HTML, CSS e JavaScript com ES modules), sem backend e sem framework, com 5 páginas. WebRTC para a mídia e PeerJS (servidor público) apenas para a sinalização.
 
 ## Estrutura
 
@@ -9,30 +9,51 @@ nono-transmissoes/
 ├─ package.json            dependência do PeerJS e script de build
 ├─ vercel.json             pasta de saída, build e cabeçalhos de segurança/noindex
 ├─ README.md
-├─ scripts/copiar-peerjs.mjs   copia o PeerJS para public/vendor
+├─ scripts/copiar-peerjs.mjs   copia PeerJS, Three, GSAP e anime.js para public/vendor
 └─ public/
-   ├─ index.html           página única (início + sala)
+   ├─ index.html           página inicial (apresentação)
+   ├─ criar.html           formulário para criar sala
+   ├─ entrar.html          formulário para entrar com código ou link
+   ├─ sala.html            a sala (transmissão, controles, chat)
+   ├─ ajuda.html           ajuda, qualidade, navegadores e privacidade
    ├─ robots.txt, favicon.svg
-   ├─ css/estilo.css
-   ├─ vendor/peerjs.min.js (gerado por "npm run build")
+   ├─ img/icones.svg       ícones (sprite)
+   ├─ css/estilo.css       sistema visual (branco, azul e preto) e microinterações da sala
+   ├─ css/animacoes.css    estados e keyframes das animações (fora da sala)
+   ├─ css/transicoes.css   View Transitions entre páginas (a sala não usa)
+   ├─ vendor/              peerjs, three (módulo), gsap, ScrollTrigger e anime (versões fixas)
    └─ js/
       ├─ config.js         TURN, prefixo da sala, limites
       ├─ qualidade.js      presets, codecs, getStats e adaptação
       ├─ sala.js           conexões, chamadas, chat, captura de mídia
-      └─ app.js            interface
+      ├─ formularios.js    criar.html e entrar.html
+      ├─ sala-pagina.js    interface de sala.html
+      └─ animacoes/        um módulo por página (index, hero3d, formularios-anim, ajuda) + base, botoes e pre
 ```
+
+Fluxo: `criar.html` ou `entrar.html` guardam os dados em `sessionStorage` (uso único) e abrem `sala.html`, que lê e apaga esses dados e conecta. Se a conexão falhar, o usuário volta ao formulário com a mensagem de erro. O link de convite aponta para `entrar.html?sala=CODIGO`.
 
 ## Rodar localmente
 
 ```bash
 npm install
-npm run build      # copia o PeerJS para public/vendor/peerjs.min.js
+npm run build      # copia PeerJS, Three, GSAP e anime.js para public/vendor
 npm start          # serve a pasta public (http://localhost:3000)
 ```
 
 `getDisplayMedia`, câmera e microfone exigem HTTPS ou `localhost`.
 
 Para ter o PeerJS "dentro" do repositório (sem depender do build), rode `npm run build` uma vez e faça commit de `public/vendor/peerjs.min.js`.
+
+## Animações e 3D
+
+- **Bibliotecas** (todas locais, versões fixas, por causa da CSP `script-src 'self'`): Three 0.170.0 (módulo ES, ≈171 KB gzip, só na index e só quando o hero fica visível), GSAP 3.12.7 e ScrollTrigger (index e ajuda), anime.js 3.2.2 (index, criar e entrar).
+- **sala.html** não carrega biblioteca nem 3D: só microinterações CSS em `estilo.css` (toast, painel de qualidade, pulso do indicador ao vivo, mensagens).
+- **prefers-reduced-motion**: sem animações, sem 3D e sem estados escondidos. O mock em CSS do hero fica no lugar da cena.
+- **Fallbacks**: sem WebGL, com economia de dados ou se uma biblioteca falhar, a página volta ao conteúdo estático. Sem View Transitions, a navegação é normal.
+- **Transições**: `css/transicoes.css` usa `@view-transition` (Chrome/Edge 126+). Como `sala.html` não o inclui, a sala é sempre navegação completa.
+- Valores dinâmicos usam classes ou CSSOM (`element.style`), nunca `style=""` nem `<style>`.
+- Para atualizar uma biblioteca, mude a versão no `package.json`, rode `npm install && npm run build` e teste a index.
 
 ## Deploy na Vercel
 

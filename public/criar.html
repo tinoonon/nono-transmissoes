@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#0a0d14">
+  <meta name="description" content="">
+  <title>Criar sala · Nono Transmissões</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="css/animacoes.css">
+  <link rel="stylesheet" href="css/transicoes.css">
+  <script src="js/animacoes/pre.js"></script>
+</head>
+<body>
+<div class="duo">
+  <aside class="lado">
+      <a class="marca" href="index.html"><span class="logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="3" stroke="#fff" stroke-width="2"/><path d="M10.5 8.5l4 2.5-4 2.5z" fill="#3B82F6"/><path d="M8 20h8" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/></svg></span>Nono Transmissões</a>
+      <h1>Abra uma sala e <em>vá ao ar</em> em segundos.</h1>
+      <p>Você será o transmissor. Quem receber o link entra como espectador.</p>
+      <ul><li><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-check"/></svg><span>Até 2 espectadores por sala</span></li><li><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-check"/></svg><span>Vídeo e áudio vão direto entre os navegadores</span></li><li><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-check"/></svg><span>Nenhum dado é coletado ou gravado</span></li></ul>
+    </aside>
+  <div class="form-area">
+    <div class="form-topo"><a class="voltar" href="index.html"><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-back"/></svg>Voltar ao início</a><span class="mudo">Já tem um código? <a href="entrar.html">Entrar</a></span></div>
+    <div class="form-miolo">
+      <span class="etapa">Nova sala</span>
+      <h2>Quem vai transmitir?</h2>
+      <p>Informe como você quer aparecer. A senha é opcional.</p>
+      <form id="f-criar" class="cartao" novalidate>
+        <div id="erro" class="erro" role="alert"></div>
+        <div class="campo">
+          <label for="nome">Seu nome</label>
+          <input id="nome" type="text" maxlength="24" autocomplete="nickname" placeholder="Como você quer aparecer">
+        </div>
+        <div class="campo">
+          <label for="senha">Senha da sala <span class="opc">(opcional)</span></label>
+          <input id="senha" type="password" maxlength="64" autocomplete="new-password" placeholder="Deixe em branco para sala aberta">
+          <small>Quem entrar precisará digitar essa senha junto com o código.</small>
+        </div>
+        <button class="btn azul grande bloco" type="submit">Criar sala <svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-arrow"/></svg></button>
+      </form>
+    </div>
+  </div>
+</div>
+<script type="module" src="js/formularios.js"></script>
+<script type="module" src="js/animacoes/formularios-anim.js"></script>
+</body>
+</html>

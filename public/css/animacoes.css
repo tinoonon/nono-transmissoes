@@ -1,0 +1,78 @@
+/* =========================================================
+   Nono Transmissões · animações (index, criar, entrar, ajuda)
+   Estados iniciais só valem com a classe .anim (definida por pre.js
+   quando o usuário NÃO prefere menos movimento).
+   ========================================================= */
+
+/* ---------- Hero ---------- */
+.heroi h1 { isolation: isolate; }
+.heroi .visual { position: relative; }
+.cena3d { position: absolute; inset: -6% -8%; width: 116%; height: 112%; opacity: 0; pointer-events: none; transition: opacity .6s ease; }
+.visual.tem3d .cena3d { opacity: 1; }
+.visual.tem3d .janela { opacity: 0; visibility: hidden; transition: opacity .5s ease, visibility .5s; }
+
+.anim .heroi h1 { visibility: hidden; }
+.anim .heroi h1.pronto { visibility: visible; }
+.pal { display: inline-block; position: relative; }
+.anim .heroi h1 .pal { opacity: 0; }
+.anim .heroi .selo, .anim .heroi .lead, .anim .heroi .acoes, .anim .heroi .provas { opacity: 0; }
+/* destaque azul animado sob as palavras do <em> */
+.heroi h1 em .pal::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: .04em; height: .16em; z-index: -1;
+  background: var(--azul); opacity: .2; transform: scaleX(0); transform-origin: left;
+  transition: transform .7s cubic-bezier(.2, .8, .2, 1);
+}
+.heroi h1 em.on .pal::after { transform: scaleX(1); }
+.heroi h1 em.on .pal:nth-of-type(2)::after { transition-delay: .18s; }
+
+/* ---------- Recursos ---------- */
+.anim .recurso:not(.visto) { opacity: 0; transition: none; }
+
+/* ---------- Passos: linha de progresso ---------- */
+.passos { position: relative; }
+.passos-trilho { position: absolute; z-index: 1; left: 0; right: 0; top: 0; height: 3px; background: #1f2637; }
+.passos-prog { display: block; width: 100%; height: 100%; background: var(--azul-cl); box-shadow: 0 0 14px var(--azul); transform-origin: left center; }
+.anim .passos-prog { transform: scaleX(0); }
+@media (max-width: 960px) {
+  .passos-trilho { right: auto; bottom: 0; width: 3px; height: auto; }
+  .passos-prog { transform-origin: center top; }
+  .anim .passos-prog { transform: scaleY(0); }
+}
+
+/* ---------- criar / entrar ---------- */
+.lado { isolation: isolate; }
+.lado > * { z-index: 1; }
+/* grade azul em movimento lento: só transform. O pseudo é maior em 1 célula e desliza 1 célula, sem emendas */
+.lado::before {
+  inset: -44px 0 0 -44px; mask-image: none; will-change: transform;
+  animation: grade-desliza 14s linear infinite;
+}
+.lado::after {
+  content: ""; position: absolute; inset: 0; z-index: 0;
+  background: radial-gradient(circle at 20% 100%, transparent 0, var(--preto) 72%);
+}
+@keyframes grade-desliza { to { transform: translate(44px, 44px); } }
+
+.anim .lado > *, .anim .form-topo, .anim .form-miolo > :not(.cartao), .anim .cartao .campo, .anim .cartao .btn.bloco { opacity: 0; }
+
+.cod-prog { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
+.cod-prog i { width: 9px; height: 9px; border-radius: 50%; background: var(--linha); transition: background .15s; }
+.cod-prog i.on { background: var(--azul); }
+input.codigo.completo { border-color: var(--azul); background: var(--azul-bg); }
+
+.cartao.treme { animation: treme .42s cubic-bezier(.36, .07, .19, .97); }
+@keyframes treme { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.cartao:has(.erro:not(:empty)) { border-color: #f3b8b2; }
+
+.btn.carregando { pointer-events: none; }
+.btn.carregando .ic { display: none; }
+.btn.carregando::after { content: ""; width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, .4); border-top-color: #fff; animation: gira .7s linear infinite; }
+
+/* ---------- Ajuda ---------- */
+.indice a { transition: color .2s, border-color .2s; }
+.indice a.ativo { color: var(--preto); border-color: var(--azul); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cena3d { display: none; }
+  .lado::before { animation: none; }
+}

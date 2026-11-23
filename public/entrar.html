@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#0a0d14">
+  <meta name="description" content="">
+  <title>Entrar em uma sala · Nono Transmissões</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="css/animacoes.css">
+  <link rel="stylesheet" href="css/transicoes.css">
+  <script src="js/animacoes/pre.js"></script>
+</head>
+<body>
+<div class="duo">
+  <aside class="lado">
+      <a class="marca" href="index.html"><span class="logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="3" stroke="#fff" stroke-width="2"/><path d="M10.5 8.5l4 2.5-4 2.5z" fill="#3B82F6"/><path d="M8 20h8" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/></svg></span>Nono Transmissões</a>
+      <h1>Alguém te chamou? <em>Entre e assista.</em></h1>
+      <p>Digite o código de 6 caracteres que você recebeu ou abra o link de convite.</p>
+      <ul><li><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-check"/></svg><span>Não precisa de conta nem de instalação</span></li><li><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-check"/></svg><span>Câmera e microfone só se você quiser</span></li><li><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-check"/></svg><span>Chat para conversar durante a transmissão</span></li></ul>
+    </aside>
+  <div class="form-area">
+    <div class="form-topo"><a class="voltar" href="index.html"><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-back"/></svg>Voltar ao início</a><span class="mudo">Quer transmitir? <a href="criar.html">Criar sala</a></span></div>
+    <div class="form-miolo">
+      <span class="etapa">Entrar</span>
+      <h2>Qual é o código da sala?</h2>
+      <p>Peça ao anfitrião o código ou o link de convite.</p>
+      <form id="f-entrar" class="cartao" novalidate>
+        <div id="erro" class="erro" role="alert"></div>
+        <div class="campo">
+          <label for="codigo">Código da sala</label>
+          <input id="codigo" class="codigo" type="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="••••••">
+        </div>
+        <div class="campo">
+          <label for="nome">Seu nome</label>
+          <input id="nome" type="text" maxlength="24" autocomplete="nickname" placeholder="Como você quer aparecer">
+        </div>
+        <div class="campo">
+          <label for="senha">Senha <span class="opc">(se a sala tiver)</span></label>
+          <input id="senha" type="password" maxlength="64" autocomplete="off">
+        </div>
+        <button class="btn azul grande bloco" type="submit">Entrar na sala <svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-arrow"/></svg></button>
+      </form>
+    </div>
+  </div>
+</div>
+<script type="module" src="js/formularios.js"></script>
+<script type="module" src="js/animacoes/formularios-anim.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#0a0d14">
+  <meta name="description" content="">
+  <title>Ajuda · Nono Transmissões</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="css/animacoes.css">
+  <link rel="stylesheet" href="css/transicoes.css">
+  <script src="js/animacoes/pre.js"></script>
+</head>
+<body>
+<header class="nav">
+  <div class="cont">
+    <a class="marca" href="index.html"><span class="logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="3" stroke="#fff" stroke-width="2"/><path d="M10.5 8.5l4 2.5-4 2.5z" fill="#3B82F6"/><path d="M8 20h8" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/></svg></span>Nono Transmissões</a>
+    <nav aria-label="Principal">
+      <a href="index.html#recursos">Recursos</a>
+      <a href="index.html#como">Como funciona</a>
+      <a href="ajuda.html" aria-current="page">Ajuda</a>
+    </nav>
+    <span class="esp"></span>
+    <a class="btn" href="entrar.html">Entrar com código</a>
+    <a class="btn preto" href="criar.html">Criar sala</a>
+  </div>
+</header>
+
+<main>
+  <div class="pag-cab"><div class="cont">
+    <span class="selo">Central de ajuda</span>
+    <h1>Tudo sobre como transmitir bem.</h1>
+    <p>Passo a passo, qualidade, compatibilidade, solução de problemas e o que acontece com os seus dados.</p>
+  </div></div>
+  <div class="cont ajuda">
+    <nav class="indice" aria-label="Nesta página">
+      <a href="#passos">Primeiros passos</a><a href="#qualidade">Qualidade e rede</a><a href="#navegadores">Navegadores</a><a href="#problemas">Problemas comuns</a><a href="#privacidade">Privacidade</a>
+    </nav>
+    <div class="texto">
+      <section id="passos">
+        <h2>Primeiros passos</h2>
+        <p>Cada sala comporta <b>3 pessoas</b>: 1 transmissor e 2 espectadores. A pessoa que cria a sala é a transmissora.</p>
+        <ul>
+          <li>Em <a href="criar.html">Criar sala</a>, informe seu nome e, se quiser, uma senha.</li>
+          <li>Dentro da sala, copie o link de convite e envie aos espectadores.</li>
+          <li>Clique em <b>Transmitir tela</b> e escolha o monitor, a janela ou a aba.</li>
+          <li>Quem recebeu o link abre, informa o nome (e a senha, se houver) e entra.</li>
+        </ul>
+        <p>Se a sala já tiver 3 pessoas, a quarta verá o aviso “Sala cheia”.</p>
+      </section>
+
+      <section id="qualidade">
+        <h2>Qualidade e rede</h2>
+        <p>O transmissor envia um fluxo separado para cada espectador. Por isso, a sua internet de envio (upload) precisa ser suficiente para todos.</p>
+        <table class="tabela">
+          <thead><tr><th>Predefinição</th><th>Banda aproximada por espectador</th></tr></thead>
+          <tbody>
+            <tr><td>720p · 30 fps</td><td>até 3 Mbps</td></tr>
+            <tr><td>1080p · 60 fps</td><td>até 8 Mbps</td></tr>
+            <tr><td>1440p · 60 fps</td><td>até 14 Mbps</td></tr>
+            <tr><td>2160p (4K) · 60 fps</td><td>até 25 Mbps</td></tr>
+          </tbody>
+        </table>
+        <p>Com a redução automática ligada, o app diminui resolução, fps e bitrate quando detecta perda de pacotes. Você escolhe se prefere manter a nitidez ou a fluidez.</p>
+        <p>O codec <b>Leve</b> (H.264) costuma usar a placa de vídeo. O <b>Nítido</b> (AV1/VP9) comprime melhor, mas exige bastante do processador.</p>
+      </section>
+
+      <section id="navegadores">
+        <h2>Navegadores</h2>
+        <ul>
+          <li><b>Chrome e Edge:</b> melhor suporte, incluindo áudio do sistema no Windows, áudio de aba e AV1.</li>
+          <li><b>Firefox:</b> funciona, mas não captura áudio do sistema.</li>
+          <li><b>Safari:</b> a captura de tela tem limitações.</li>
+        </ul>
+        <p>Captura de tela, câmera e microfone exigem <code>https</code> ou <code>localhost</code>.</p>
+      </section>
+
+      <section id="problemas">
+        <h2>Problemas comuns</h2>
+        <details class="faq"><summary>Ficou preso em “Conectando”</summary><p>Algumas redes (corporativas ou 4G com CGNAT) bloqueiam a conexão direta. Tente outra rede. Quem hospeda o site pode configurar um servidor TURN, como explicado no README do projeto.</p></details>
+        <details class="faq"><summary>Os espectadores não ouvem o som</summary><p>Ao escolher o que compartilhar, marque “Compartilhar áudio do sistema” (tela inteira) ou “Compartilhar áudio da aba”. Se esqueceu, pare e inicie a transmissão de novo.</p></details>
+        <details class="faq"><summary>A imagem está travando</summary><p>Reduza a predefinição, escolha o codec Leve e deixe a redução automática ligada. Se o aviso disser que o processador está no limite, feche outros programas.</p></details>
+        <details class="faq"><summary>O vídeo não começa para o espectador</summary><p>Clique uma vez sobre o vídeo. Alguns navegadores só liberam a reprodução depois de uma interação.</p></details>
+        <details class="faq"><summary>Esqueci o código da sala</summary><p>O código aparece no topo da sala. Quem está dentro pode clicar nele para copiar.</p></details>
+      </section>
+
+      <section id="privacidade">
+        <h2>Privacidade</h2>
+        <ul>
+          <li>Sem login, sem analytics e sem gravação.</li>
+          <li>A mídia vai direto entre os navegadores (WebRTC). O servidor público do PeerJS só apresenta os participantes uns aos outros.</li>
+          <li>A senha nunca é enviada em texto: o espectador envia um hash que o anfitrião confere. Ela evita curiosos, mas não substitui um canal privado para passar o código.</li>
+          <li>Câmera e microfone dos espectadores vão apenas para o anfitrião.</li>
+          <li>As páginas pedem aos buscadores que não as indexem.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</main>
+<footer class="rodape">
+  <div class="cont">
+    <a class="marca" href="index.html"><span class="logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="3" stroke="#fff" stroke-width="2"/><path d="M10.5 8.5l4 2.5-4 2.5z" fill="#3B82F6"/><path d="M8 20h8" stroke="#3B82F6" stroke-width="2" stroke-linecap="round"/></svg></span>Nono Transmissões</a>
+    <nav aria-label="Rodapé"><a href="criar.html">Criar sala</a><a href="entrar.html">Entrar</a><a href="ajuda.html">Ajuda</a><a href="ajuda.html#privacidade">Privacidade</a></nav>
+    <span class="esp"></span>
+    <span>Sem cadastro. Sem gravação. Direto entre navegadores.</span>
+  </div>
+</footer>
+<script type="module" src="js/animacoes/ajuda.js"></script>
+</body>
+</html>
