@@ -104,10 +104,14 @@ const ui = {
     const e = $('#stats');
     if (!s || !s.w) { e.hidden = true; return; }
     e.hidden = false;
+    const limites = { cpu: 'processador', bandwidth: 'rede' };
     e.textContent = `${s.w}×${s.h} · ${Math.round(s.fps || 0)} fps · ${formatarBitrate(s.kbps)}` +
+      (s.codec ? ` · ${s.codec}` : '') +
+      (limites[s.limite] ? ` · limitado por ${limites[s.limite]}` : '') +
       (nivel > 0 ? ` · qualidade reduzida (nível ${nivel})` : '');
   },
   aoAviso: toast,
+  aoPreset(id) { $('#preset').value = id; },
   aoTelaParada() {
     estado.tela = false;
     marcar('#btn-tela', false);
@@ -219,6 +223,7 @@ $('#btn-tela').addEventListener('click', async () => {
   if (!sala) return;
   if (estado.tela) { sala.pararTela(); return; }
   try {
+    sala.codec = $('#codec').value;
     sala.adaptador.modo = $('#modo').value;
     sala.adaptador.ativo = $('#auto').checked;
     const r = await sala.iniciarTela($('#preset').value, $('#hint').value);
@@ -240,6 +245,7 @@ $('#btn-tela').addEventListener('click', async () => {
 $('#preset').addEventListener('change', (ev) => { if (sala) sala.mudarPreset(ev.target.value); });
 $('#hint').addEventListener('change', (ev) => { if (sala) sala.definirHint(ev.target.value); });
 $('#auto').addEventListener('change', (ev) => { if (sala) sala.adaptador.definirAtivo(ev.target.checked); });
+$('#codec').addEventListener('change', (ev) => { if (sala) sala.definirCodec(ev.target.value); });
 $('#modo').addEventListener('change', (ev) => { if (sala) sala.adaptador.definirModo(ev.target.value); });
 
 $('#btn-mic').addEventListener('click', async () => {

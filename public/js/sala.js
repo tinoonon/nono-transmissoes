@@ -1,5 +1,5 @@
 import { CONFIG, ICE_SERVERS } from './config.js';
-import { PRESETS, transformarSDP, lerStats, Adaptador, aplicarParametros } from './qualidade.js';
+import { PRESETS, transformarSDP, ajustarBitrateSDP, lerStats, Adaptador, aplicarParametros } from './qualidade.js';
 
 const ALFABETO = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
@@ -36,6 +36,11 @@ export class Sala {
     this.dest = null;
     this.fontes = new Map();
     this.presetId = '1080p60';
+    this.codec = 'leve';
+    this.baixa = 0;
+    this.ok = 0;
+    this.tentativas = 0;
+    this.proxCorrecao = 0;
     this.conectado = false;
     this.encerrada = false;
     this.ant = new Map();
@@ -181,8 +186,8 @@ export class Sala {
     if (!stream || !stream.getTracks().length) return;
     const pr = PRESETS[this.presetId];
     const opcoes = kind === 'tela'
-      ? { min: 500, inicio: Math.round(pr.bitrate * 0.6 / 1000), max: Math.round(pr.bitrate * 1.5 / 1000) }
-      : { min: 100, inicio: 1500, max: 4000 };
+      ? { min: 500, inicio: Math.round(pr.bitrate * 0.6 / 1000), max: Math.round(pr.bitrate * 1.5 / 1000), codec: this.codec }
+      : { min: 100, inicio: 1500, max: 4000, codec: this.codec };
     const call = this.peer.call(id, stream, { metadata: { kind, nome: this.nome }, sdpTransform: (sdp) => transformarSDP(sdp, opcoes) });
     if (!call) return;
     par.chamadas.set(kind, call);
@@ -201,7 +206,7 @@ export class Sala {
     const nome = String((call.metadata && call.metadata.nome) || 'Participante').slice(0, 24);
     const chave = call.peer + ':' + kind;
     this.recebidas.set(chave, call);
-    call.answer(undefined, { sdpTransform: (sdp) => transformarSDP(sdp) });
+    call.answer(undefined, { sdpTransform: (sdp) => ajustarBitrateSDP(sdp) });
     call.on('stream', (s) => this.ui.aoFluxo(kind, s, call.peer, nome));
     call.on('close', () => {
       if (this.recebidas.get(chave) === call) this.recebidas.delete(chave);
@@ -249,6 +254,7 @@ export class Sala {
     v.addEventListener('ended', () => this.pararTela());
     this.saida = new MediaStream([v, this.dest.stream.getAudioTracks()[0]]);
     this.adaptador.reiniciar();
+    this.baixa = this.ok = this.tentativas = 0;
     this.publicar('tela', this.saida);
     return { temAudio, stream: this.saida };
   }
@@ -261,6 +267,11 @@ export class Sala {
     this._removerFonte('sistema');
     this.publicar('tela', null);
     this.ui.aoTelaParada();
+  }
+
+  definirCodec(codec) {
+    this.codec = codec;
+    if (this.saida) this.publicar('tela', this.saida);  // renegocia com o novo codec
   }
 
   definirHint(hint) {
@@ -355,10 +366,52 @@ export class Sala {
         if (s.limite === 'bandwidth' && kbps < alvoKbps * 0.6) pior.banda = true;
         if (s.limite === 'cpu') pior.cpu = true;
       }
-      if (!ref || kbps > ref.kbps) ref = { w: s.w, h: s.h, fps: s.fps, kbps };
+      if (!ref || kbps > ref.kbps) ref = { w: s.w, h: s.h, fps: s.fps, kbps, codec: s.codec, limite: s.limite };
     }
     this.ui.aoStats(ref, this.adaptador.nivel);
-    if (this.papel === 'host') this.adaptador.amostra(pior);
+    if (this.papel === 'host') {
+      this.adaptador.amostra(pior);
+      this._autocorrigir(ref, pior);
+    }
+  }
+
+  // Compara a resolução que está saindo com a esperada pelo preset e força a correção em etapas.
+  _autocorrigir(ref, pior) {
+    const t = this.cap && this.cap.getVideoTracks()[0];
+    const agora = Date.now();
+    if (!t || !ref || !ref.w || agora < this.adaptador.espera || agora < this.proxCorrecao) return;
+    const cfg = t.getSettings();
+    const p = PRESETS[this.presetId];
+    const alvoW = Math.min(cfg.width || p.w, p.w) / this.adaptador.atual.escala;
+    if (ref.w >= alvoW * 0.75) {
+      this.baixa = 0;
+      if (++this.ok >= 30) this.tentativas = 0;
+      return;
+    }
+    this.ok = 0;
+    if (++this.baixa < 4) return;           // ~8 s seguidos abaixo do esperado
+    this.baixa = 0;
+    this.proxCorrecao = agora + 15000;
+    this.tentativas++;
+    if (this.tentativas === 1) {
+      this.reaplicar();
+      this.ui.aoAviso('Resolução abaixo do esperado: forçando a qualidade configurada.');
+    } else if (this.tentativas === 2) {
+      this.publicar('tela', this.saida);
+      this.ui.aoAviso('Reiniciando o envio com a qualidade configurada.');
+    } else if (pior.cpu) {
+      const ids = Object.keys(PRESETS);
+      const i = ids.indexOf(this.presetId);
+      if (i > 0) {
+        this.mudarPreset(ids[i - 1]);
+        this.ui.aoPreset(ids[i - 1]);
+        this.ui.aoAviso('Processador no limite: predefinição reduzida para ' + PRESETS[ids[i - 1]].rotulo + '.');
+      } else {
+        this.ui.aoAviso('O processador não está dando conta de codificar. Feche outros programas.');
+      }
+    } else {
+      this.ui.aoAviso('Não foi possível recuperar a resolução. Verifique a rede e o processador.');
+    }
   }
 
   sair() {

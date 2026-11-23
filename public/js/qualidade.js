@@ -27,10 +27,15 @@ const DEGRAUS = {
   ]
 };
 const DEGRADACAO = { balanceado: 'balanced', nitidez: 'maintain-resolution', fluidez: 'maintain-framerate' };
-const ORDEM_CODECS = ['AV1', 'VP9', 'H264'];
+// leve: H.264 costuma usar a placa de vídeo (pouca CPU). eficiente: AV1/VP9 são mais nítidos por bit, mas pesados.
+const ORDENS = {
+  leve: ['H264', 'VP8', 'VP9', 'AV1'],
+  eficiente: ['AV1', 'VP9', 'H264', 'VP8']
+};
 
 // Reordena os payloads de vídeo do SDP: AV1, VP9, H.264 e demais (RTX acompanha o codec associado).
-export function preferirCodecs(sdp) {
+export function preferirCodecs(sdp, ordemId = 'leve') {
+  const ORDEM_CODECS = ORDENS[ordemId] || ORDENS.leve;
   const L = sdp.split('\r\n');
   const inicios = [];
   L.forEach((l, i) => { if (l.startsWith('m=')) inicios.push(i); });
@@ -79,17 +84,19 @@ export function ajustarBitrateSDP(sdp, { min = 500, inicio = 5000, max = 40000 }
   }).join('\r\n');
 }
 
-export const transformarSDP = (sdp, opcoes) => ajustarBitrateSDP(preferirCodecs(sdp), opcoes);
+export const transformarSDP = (sdp, opcoes = {}) => ajustarBitrateSDP(preferirCodecs(sdp, opcoes.codec), opcoes);
 
 export async function lerStats(pc) {
   const r = {};
   const rel = await pc.getStats();
+  const codecs = {};
+  rel.forEach((s) => { if (s.type === 'codec' && s.mimeType) codecs[s.id] = s.mimeType.replace('video/', ''); });
   rel.forEach((s) => {
     if (s.kind !== 'video' && s.mediaType !== 'video') return;
     if (s.type === 'inbound-rtp') {
-      Object.assign(r, { dir: 'rx', w: s.frameWidth, h: s.frameHeight, fps: s.framesPerSecond, bytes: s.bytesReceived, perdidos: s.packetsLost, recebidos: s.packetsReceived, t: s.timestamp });
+      Object.assign(r, { dir: 'rx', w: s.frameWidth, h: s.frameHeight, fps: s.framesPerSecond, bytes: s.bytesReceived, perdidos: s.packetsLost, recebidos: s.packetsReceived, codec: codecs[s.codecId], t: s.timestamp });
     } else if (s.type === 'outbound-rtp') {
-      Object.assign(r, { dir: 'tx', w: s.frameWidth, h: s.frameHeight, fps: s.framesPerSecond, bytes: s.bytesSent, limite: s.qualityLimitationReason, t: s.timestamp });
+      Object.assign(r, { dir: 'tx', w: s.frameWidth, h: s.frameHeight, fps: s.framesPerSecond, bytes: s.bytesSent, limite: s.qualityLimitationReason, codec: codecs[s.codecId], t: s.timestamp });
     } else if (s.type === 'remote-inbound-rtp') {
       r.perda = s.fractionLost;
       r.rtt = s.roundTripTime;
