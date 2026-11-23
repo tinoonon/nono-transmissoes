@@ -1,0 +1,14 @@
+{
+  "name": "nono-transmissoes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Transmissão de tela P2P para até 3 pessoas (WebRTC + PeerJS)",
+  "scripts": {
+    "build": "node scripts/copiar-peerjs.mjs",
+    "start": "npx serve public"
+  },
+  "dependencies": {
+    "peerjs": "1.5.4"
+  }
+}

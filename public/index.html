@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="dark">
+  <title>Nono Transmissões</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body data-papel="">
+  <svg class="sr" aria-hidden="true" focusable="false">
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+    <symbol id="i-camera" viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+    <symbol id="i-expand" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+    <symbol id="i-pip" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><rect x="12" y="11" width="7" height="6" rx="1"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-7-7-1z"/></symbol>
+    <symbol id="i-exit" viewBox="0 0 24 24"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M15 8l4 4-4 4M19 12H9"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.3a6.5 6.5 0 0 1 3.5 5.7"/></symbol>
+  </svg>
+
+  <main id="inicio" class="centro">
+    <header class="marca">
+      <svg class="ic grande" aria-hidden="true"><use href="#i-monitor"/></svg>
+      <h1>Nono Transmissões</h1>
+    </header>
+    <p class="sub">Transmita sua tela em tempo real para até 2 pessoas. Sem cadastro, sem gravação, direto entre os navegadores.</p>
+
+    <div class="campo-nome">
+      <label for="nome">Seu nome</label>
+      <input id="nome" type="text" maxlength="24" autocomplete="nickname" placeholder="Como você quer aparecer">
+    </div>
+
+    <div class="grade">
+      <section class="cartao" aria-labelledby="t-criar">
+        <h2 id="t-criar">Criar sala</h2>
+        <p class="mudo">Você será o transmissor. Compartilhe o link com quem vai assistir.</p>
+        <form id="f-criar">
+          <label for="senha-criar">Senha da sala (opcional)</label>
+          <input id="senha-criar" type="password" maxlength="64" autocomplete="new-password">
+          <button class="btn prim" type="submit">Criar sala</button>
+        </form>
+      </section>
+
+      <section class="cartao" aria-labelledby="t-entrar">
+        <h2 id="t-entrar">Entrar em uma sala</h2>
+        <p class="mudo">Digite o código de 6 caracteres recebido.</p>
+        <form id="f-entrar">
+          <label for="codigo">Código da sala</label>
+          <input id="codigo" type="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" class="codigo">
+          <label for="senha-entrar">Senha (se a sala tiver)</label>
+          <input id="senha-entrar" type="password" maxlength="64" autocomplete="off">
+          <button class="btn" type="submit">Entrar</button>
+        </form>
+      </section>
+    </div>
+    <p id="erro-inicio" class="erro" role="alert"></p>
+    <p class="mudo pequeno">Nenhum dado é coletado ou gravado. A transmissão vai direto entre os navegadores; o servidor público do PeerJS só apresenta os participantes uns aos outros.</p>
+  </main>
+
+  <div id="sala" class="sala" hidden>
+    <header class="topo">
+      <svg class="ic" aria-hidden="true"><use href="#i-monitor"/></svg>
+      <strong>Nono Transmissões</strong>
+      <span class="cod" id="codigo-sala" aria-label="Código da sala"></span>
+      <span class="esp"></span>
+      <span class="mudo"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg> <span id="n-part">1 de 3</span></span>
+      <button class="btn" id="btn-sair" type="button"><svg class="ic" aria-hidden="true"><use href="#i-exit"/></svg>Sair</button>
+    </header>
+
+    <section class="palco" aria-label="Transmissão">
+      <div id="aviso-audio" class="aviso" role="alert" hidden>
+        O áudio não está sendo compartilhado. Ao escolher o que transmitir, marque "Compartilhar áudio do sistema" (tela inteira) ou "Compartilhar áudio da aba" (aba do navegador). Para corrigir, pare e inicie a transmissão novamente.
+      </div>
+
+      <div class="video-wrap" id="video-wrap">
+        <video id="video" autoplay playsinline></video>
+        <div id="vazio" class="vazio"><span>Aguardando a transmissão</span></div>
+        <div id="stats" class="stats" hidden></div>
+        <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+      </div>
+
+      <div class="barra" role="toolbar" aria-label="Controles da transmissão">
+        <button class="btn prim p-host" id="btn-tela" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-monitor"/></svg><span id="txt-tela">Transmitir tela</span></button>
+        <button class="btn" id="btn-mic" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-mic"/></svg>Microfone</button>
+        <button class="btn" id="btn-cam" type="button" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-camera"/></svg>Câmera</button>
+        <span class="esp"></span>
+        <label class="vol" for="volume"><svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg><span class="sr">Volume</span>
+          <input id="volume" type="range" min="0" max="1" step="0.05" value="1"></label>
+        <button class="btn" id="btn-pip" type="button"><svg class="ic" aria-hidden="true"><use href="#i-pip"/></svg>Janela flutuante</button>
+        <button class="btn" id="btn-fs" type="button"><svg class="ic" aria-hidden="true"><use href="#i-expand"/></svg>Tela cheia</button>
+      </div>
+
+      <section class="painel p-host" aria-labelledby="t-convite">
+        <h2 id="t-convite">Convite</h2>
+        <label for="link-convite">Link para enviar aos espectadores</label>
+        <div class="par">
+          <input id="link-convite" type="text" readonly>
+          <button class="btn" id="btn-copiar" type="button"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg>Copiar</button>
+        </div>
+      </section>
+
+      <section class="painel p-host" aria-labelledby="t-qual">
+        <h2 id="t-qual">Qualidade</h2>
+        <div class="linha">
+          <div><label for="preset">Predefinição</label><select id="preset"></select></div>
+          <div><label for="hint">Otimizar para</label>
+            <select id="hint">
+              <option value="motion">Movimento (jogos, vídeo)</option>
+              <option value="detail">Detalhe (texto, código)</option>
+            </select></div>
+        </div>
+        <label class="check"><input id="auto" type="checkbox" checked> Reduzir a qualidade automaticamente se a rede piorar</label>
+        <p class="mudo pequeno">Preferência de codec: AV1, depois VP9, depois H.264. O navegador escolhe o primeiro que ambos suportam.</p>
+      </section>
+    </section>
+
+    <aside class="lateral" aria-label="Participantes e chat">
+      <section aria-labelledby="t-part">
+        <h2 id="t-part">Participantes</h2>
+        <ul id="lista" class="lista"></ul>
+      </section>
+      <section aria-labelledby="t-cams">
+        <h2 id="t-cams">Câmeras</h2>
+        <div id="tiles" class="tiles"></div>
+      </section>
+      <section class="chat" aria-labelledby="t-chat">
+        <h2 id="t-chat">Chat</h2>
+        <div id="chat-log" class="chat-log" role="log" aria-live="polite"></div>
+        <form id="f-chat">
+          <label class="sr" for="chat-texto">Mensagem</label>
+          <input id="chat-texto" type="text" maxlength="500" autocomplete="off" placeholder="Escreva uma mensagem">
+          <button class="btn prim" type="submit" aria-label="Enviar mensagem"><svg class="ic" aria-hidden="true"><use href="#i-send"/></svg></button>
+        </form>
+      </section>
+    </aside>
+  </div>
+
+  <script src="vendor/peerjs.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
