@@ -81,6 +81,7 @@ a:hover { text-decoration: underline; }
 .marca { display: inline-flex; align-items: center; gap: 10px; color: var(--preto); font-weight: 800; letter-spacing: -.03em; font-size: 18px; }
 .marca:hover { text-decoration: none; }
 .logo { width: 34px; height: 34px; border-radius: 10px; background: var(--preto); display: grid; place-items: center; }
+[data-tema="escuro"] .logo { background: #3b82f6; }
 .logo svg { width: 20px; height: 20px; }
 .nav { position: sticky; top: 0; z-index: 20; background: var(--branco); background: rgba(255, 255, 255, .88); backdrop-filter: blur(10px); border-bottom: 1px solid var(--linha); }
 [data-tema="escuro"] .nav { background: rgba(22, 28, 43, .88); }
@@ -95,6 +96,8 @@ a:hover { text-decoration: underline; }
 .btn-tema:active { transform: scale(.95); }
 .btn-tema .ic { width: 20px; height: 20px; }
 .btn-tema .ic-sol { display: none; }
+[data-tema="escuro"] .btn-tema { background: #232b3f; border-color: #3a4257; color: #e8edf9; }
+[data-tema="escuro"] .btn-tema:hover { background: #2d3548; border-color: var(--azul-cl); }
 [data-tema="escuro"] .btn-tema .ic-lua { display: none; }
 [data-tema="escuro"] .btn-tema .ic-sol { display: block; }
 
@@ -114,8 +117,8 @@ a:hover { text-decoration: underline; }
 .provas li { display: inline-flex; align-items: center; gap: 6px; }
 .provas .ic { color: var(--azul); width: 16px; height: 16px; stroke-width: 2.4; }
 
-.janela { position: relative; background: var(--preto); border-radius: 18px; padding: 14px; box-shadow: 0 30px 60px -20px rgba(10, 13, 20, .45), 0 0 0 1px rgba(255, 255, 255, .06) inset; transform: rotate(1.2deg); }
-[data-tema="escuro"] .janela { background: #1a2133; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .6), 0 0 0 1px rgba(255, 255, 255, .08) inset; }
+.janela { position: relative; background: #0a0d14; border-radius: 18px; padding: 14px; box-shadow: 0 30px 60px -20px rgba(10, 13, 20, .45), 0 0 0 1px rgba(255, 255, 255, .06) inset; transform: rotate(1.2deg); }
+[data-tema="escuro"] .janela { background: #161c2b; box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .6), 0 0 0 1px rgba(255, 255, 255, .08) inset; }
 .janela-topo { display: flex; align-items: center; gap: 6px; padding: 2px 4px 12px; color: #8a93a6; font: 12px/1 var(--mono); }
 .janela-topo i { width: 10px; height: 10px; border-radius: 50%; background: #2a3142; }
 .janela-topo span { margin-left: 10px; }
@@ -151,42 +154,43 @@ a:hover { text-decoration: underline; }
 .recurso h3 { font-size: 20px; margin-bottom: 8px; }
 .recurso p { color: var(--mudo); font-size: 15px; }
 
-.escuro { background: var(--preto); color: #c9d1e2; }
-[data-tema="escuro"] .escuro { background: #0a0d14; }
+.escuro { background: #0a0d14; color: #c9d1e2; }
 .escuro .cab h2, .escuro h3 { color: #fff; }
 .escuro .cab p { color: #98a2b8; }
 .escuro .cab .rotulo { color: var(--azul-cl); }
 .passos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid #1f2637; border-radius: 18px; overflow: hidden; }
 .passo { padding: 34px 30px 38px; border-right: 1px solid #1f2637; background: linear-gradient(180deg, #0e1320, #0a0d14); }
-[data-tema="escuro"] .passo { background: linear-gradient(180deg, #12161f, #0a0d14); }
 .passo:last-child { border-right: 0; }
 .passo .n { font-weight: 800; font-size: 56px; line-height: 1; letter-spacing: -.05em; color: var(--azul); margin-bottom: 22px; }
 .passo h3 { font-size: 22px; margin-bottom: 10px; }
 .passo p { color: #98a2b8; font-size: 15px; }
 
 .faixa { background: var(--azul); color: #fff; border-radius: 24px; padding: 56px; display: flex; align-items: center; gap: 32px; flex-wrap: wrap; position: relative; overflow: hidden; }
+[data-tema="escuro"] .faixa { background: #2563eb; }
 .faixa::after { content: ""; position: absolute; right: -80px; top: -80px; width: 320px; height: 320px; border-radius: 50%; border: 54px solid rgba(255, 255, 255, .1); }
 .faixa h2 { color: #fff; font-size: clamp(28px, 3.6vw, 40px); font-weight: 800; max-width: 18ch; }
 .faixa p { color: #dbe6ff; margin-top: 10px; }
 .faixa .btn { background: #fff; border-color: #fff; color: var(--preto); position: relative; z-index: 1; }
 .faixa .btn:hover { background: var(--preto); border-color: var(--preto); color: #fff; }
+[data-tema="escuro"] .faixa .btn { background: #fff; color: #0a0d14; }
+[data-tema="escuro"] .faixa .btn:hover { background: #0a0d14; border-color: #0a0d14; color: #fff; }
 
-.rodape { background: var(--preto); color: #8a93a6; padding: 44px 0; font-size: 14px; }
-[data-tema="escuro"] .rodape { background: #0a0d14; }
+.rodape { background: #0a0d14; color: #8a93a6; padding: 44px 0; font-size: 14px; }
 .rodape .cont { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 32px; }
 .rodape .marca { color: #fff; }
 .rodape .logo { background: #1a2133; }
+[data-tema="escuro"] .rodape .logo { background: #3b82f6; }
 .rodape nav { display: flex; gap: 22px; }
 .rodape a { color: #c9d1e2; }
 
 /* ---------- Páginas de entrada (criar / entrar) ---------- */
 .duo { display: grid; grid-template-columns: minmax(340px, .85fr) 1.15fr; min-height: 100vh; }
-.lado { position: relative; background: var(--preto); color: #c9d1e2; padding: 36px 48px; display: flex; flex-direction: column; overflow: hidden; }
-[data-tema="escuro"] .lado { background: #0a0d14; }
+.lado { position: relative; background: #0a0d14; color: #c9d1e2; padding: 36px 48px; display: flex; flex-direction: column; overflow: hidden; }
 .lado::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(59, 130, 246, .09) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, .09) 1px, transparent 1px); background-size: 44px 44px; mask-image: radial-gradient(circle at 20% 100%, #000, transparent 70%); }
 .lado > * { position: relative; }
 .lado .marca { color: #fff; }
 .lado .logo { background: #1a2133; }
+[data-tema="escuro"] .lado .logo { background: #3b82f6; }
 .lado h1 { color: #fff; font-size: clamp(32px, 3.4vw, 46px); font-weight: 800; margin: auto 0 18px; padding-top: 56px; }
 .lado h1 em { font-style: normal; color: var(--azul-cl); }
 .lado > p { color: #98a2b8; max-width: 38ch; }
