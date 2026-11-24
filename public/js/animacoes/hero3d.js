@@ -37,7 +37,21 @@ function texturaTela() {
   return t;
 }
 
-export function iniciar(visual, canvas) {
+// Cartão flutuante (UI) desenhado em canvas 2D.
+function cartao(texto, fundo, cor) {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 128;
+  const g = c.getContext('2d');
+  g.fillStyle = fundo; retangulo(g, 0, 0, 512, 128, 40);
+  g.fillStyle = '#2563eb'; g.beginPath(); g.arc(64, 64, 26, 0, 7); g.fill();
+  g.fillStyle = cor; g.font = '700 38px system-ui, sans-serif'; g.textBaseline = 'middle';
+  g.fillText(texto, 112, 66);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 0.525), new THREE.MeshBasicMaterial({ map: t, transparent: true, toneMapped: false }));
+  return m;
+}
+
+export function iniciar(visual, canvas, { estatico = false } = {}) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); // máximo 2
   renderer.setClearColor(0x000000, 0);
@@ -74,8 +88,13 @@ export function iniciar(visual, canvas) {
   grade.material.transparent = true; grade.material.opacity = 0.32;
   grade.position.y = -2.1; scene.add(grade);
 
+  // Cartões flutuantes em profundidades diferentes (dão sensação de 3D no parallax)
+  const cartaoA = cartao('Ana entrou na sala', '#ffffff', '#0a0d14'); cartaoA.position.set(-2.7, -0.9, 1.6);
+  const cartaoB = cartao('3 na sala · ao vivo', '#2563eb', '#ffffff'); cartaoB.position.set(2.6, 1.5, 1.2);
+  scene.add(cartaoA, cartaoB);
+
   // Partículas sutis
-  const N = 140, pos = new Float32Array(N * 3);
+  const N = 220, pos = new Float32Array(N * 3);
   for (let i = 0; i < N; i++) {
     pos[i * 3] = (Math.random() - 0.5) * 14;
     pos[i * 3 + 1] = (Math.random() - 0.5) * 7;
@@ -83,10 +102,18 @@ export function iniciar(visual, canvas) {
   }
   const geoP = new THREE.BufferGeometry();
   geoP.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const particulas = new THREE.Points(geoP, new THREE.PointsMaterial({ color: 0x3b82f6, size: 0.05, transparent: true, opacity: 0.7, depthWrite: false }));
+  const particulas = new THREE.Points(geoP, new THREE.PointsMaterial({ color: 0x3b82f6, size: 0.075, transparent: true, opacity: 0.85, depthWrite: false }));
   scene.add(particulas);
 
   // Estado de interação
+  if (estatico) { // movimento reduzido: um único quadro, sem laço, sem eventos
+    const ro0 = new ResizeObserver(() => { redimensionar(); renderer.render(scene, camera); });
+    ro0.observe(canvas);
+    monitor.rotation.y = -0.35;
+    redimensionar(); renderer.render(scene, camera);
+    return () => { ro0.disconnect(); renderer.dispose(); };
+  }
+
   const alvo = { x: 0, y: 0 }, atual = { x: 0, y: 0 };
   let rolagem = 0, rolAtual = 0, visivel = true, raf = 0;
   const relogio = new THREE.Clock();
@@ -106,11 +133,14 @@ export function iniciar(visual, canvas) {
     const t = relogio.getElapsedTime();
     atual.x += (alvo.x - atual.x) * 0.06; atual.y += (alvo.y - atual.y) * 0.06;
     rolAtual += (rolagem - rolAtual) * 0.08;
-    monitor.rotation.y = -0.35 + atual.x * 0.35 + rolAtual * 0.9;
-    monitor.rotation.x = 0.05 + atual.y * 0.12;
+    monitor.rotation.y = -0.35 + atual.x * 0.55 + rolAtual * 1.1;
+    monitor.rotation.x = 0.05 + atual.y * 0.2;
     monitor.position.y = Math.sin(t * 1.1) * 0.1 - rolAtual * 0.6;
     particulas.rotation.y = t * 0.02; particulas.position.y = rolAtual * 0.8;
     anel.rotation.z = t * 0.1;
+    cartaoA.position.set(-2.7 + atual.x * 0.7, -0.9 + Math.sin(t * 1.3) * 0.12 - rolAtual * 0.9, 1.6);
+    cartaoB.position.set(2.6 + atual.x * 0.5, 1.5 + Math.sin(t * 1.1 + 2) * 0.12 - rolAtual * 0.5, 1.2);
+    cartaoA.rotation.y = atual.x * 0.3; cartaoB.rotation.y = atual.x * 0.3;
     grade.position.z = (t * 0.3) % 1;
     renderer.render(scene, camera);
   }

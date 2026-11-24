@@ -70,20 +70,46 @@ function passos(gsap, ScrollTrigger) {
   mm.add('(max-width: 960px)', () => { gsap.fromTo(prog, { scaleY: 0 }, { scaleY: 1, ease: 'none', scrollTrigger: gatilho }); });
 }
 
-function cena3d() {
+// Plano B sem WebGL: o próprio mock em CSS ganha profundidade (perspectiva, flutuação e inclinação com o mouse).
+function inclinarMock(gsap) {
+  const j = $('.heroi .janela');
+  if (!j) return;
+  gsap.set(j, { transformPerspective: 900, rotation: 1.2 });
+  gsap.to(j, { y: -10, duration: 2.4, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+  const rx = gsap.quickTo(j, 'rotationX', { duration: 0.6, ease: 'power3.out' });
+  const ry = gsap.quickTo(j, 'rotationY', { duration: 0.6, ease: 'power3.out' });
+  addEventListener('pointermove', (e) => {
+    ry(((e.clientX / innerWidth) * 2 - 1) * 12);
+    rx(-((e.clientY / innerHeight) * 2 - 1) * 8);
+  }, { passive: true });
+}
+
+// Registra o resultado em <html data-cena3d="..."> para facilitar o diagnóstico.
+function cena3d(estatico = false, gsap = null) {
+  const marcar = (motivo) => {
+    document.documentElement.dataset.cena3d = motivo;
+    if (motivo !== 'ok') console.info('[Nono] cena 3D desativada:', motivo);
+    if (motivo !== 'ok' && gsap && !estatico) inclinarMock(gsap);
+  };
   const visual = $('.heroi .visual'), canvas = $('.cena3d');
-  if (!visual || !canvas || navigator.connection?.saveData || !temWebGL()) return;
+  if (!visual || !canvas) return marcar('sem-canvas');
+  if (navigator.connection?.saveData) return marcar('economia-de-dados');
+  if (!temWebGL()) return marcar('sem-webgl');
   aoFicarVisivel(visual, async () => {
     try {
       const { iniciar } = await import('./hero3d.js');
-      iniciar(visual, canvas);
+      iniciar(visual, canvas, { estatico });
       visual.classList.add('tem3d');
-    } catch (_) { /* mantém o mock em CSS */ }
+      marcar('ok');
+    } catch (e) {
+      console.warn('[Nono] erro na cena 3D:', e);
+      marcar('erro');
+    }
   });
 }
 
 async function principal() {
-  if (reduzMovimento) return; // sem movimento: página estática e sem 3D
+  if (reduzMovimento) { document.documentElement.dataset.movimento = 'reduzido'; cena3d(true); return; } // sem movimento: só um quadro 3D estático, sem laço de render
   try {
     await Promise.all([carregarScript('vendor/gsap.min.js'), carregarScript('vendor/anime.min.js')]);
     await carregarScript('vendor/ScrollTrigger.min.js');
@@ -96,6 +122,6 @@ async function principal() {
   passos(gsap, ScrollTrigger);
   gsap.to('.heroi .visual', { y: -30, ease: 'none', scrollTrigger: { trigger: '.heroi', start: 'top top', end: 'bottom top', scrub: true } });
   iniciarBotoes(anime);
-  cena3d();
+  cena3d(false, gsap);
 }
 principal();

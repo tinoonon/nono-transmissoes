@@ -73,6 +73,5 @@ input.codigo.completo { border-color: var(--azul); background: var(--azul-bg); }
 .indice a.ativo { color: var(--preto); border-color: var(--azul); font-weight: 600; }
 
 @media (prefers-reduced-motion: reduce) {
-  .cena3d { display: none; }
   .lado::before { animation: none; }
 }
