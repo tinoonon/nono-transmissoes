@@ -28,10 +28,23 @@ nono-transmissoes/
       ├─ sala.js           conexões, chamadas, chat, captura de mídia
       ├─ formularios.js    criar.html e entrar.html
       ├─ sala-pagina.js    interface de sala.html
+      ├─ tema.js           sistema de tema escuro/claro com persistência
       └─ animacoes/        um módulo por página (index, hero3d, formularios-anim, ajuda) + base, botoes e pre
 ```
 
 Fluxo: `criar.html` ou `entrar.html` guardam os dados em `sessionStorage` (uso único) e abrem `sala.html`, que lê e apaga esses dados e conecta. Se a conexão falhar, o usuário volta ao formulário com a mensagem de erro. O link de convite aponta para `entrar.html?sala=CODIGO`.
+
+## Tema Escuro/Claro
+
+O projeto inclui um sistema de tema escuro/claro com:
+
+- **Botão de alternância** presente em todas as páginas (ícone de lua/sol)
+- **Persistência** via localStorage - a preferência é salva entre sessões
+- **Detecção automática** da preferência do sistema operacional (`prefers-color-scheme`)
+- **Variáveis CSS** que se adaptam automaticamente ao tema selecionado
+- **Transição suave** entre temas sem recarregar a página
+
+O tema é gerenciado pelo arquivo `js/tema.js` e é aplicado através do atributo `data-tema="escuro"` no elemento `<html>`.
 
 ## Rodar localmente
 

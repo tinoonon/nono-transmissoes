@@ -11,6 +11,7 @@
   <title>Sala · Nono Transmissões</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/estilo.css">
+  <script src="js/tema.js"></script>
 </head>
 <body class="sala-pag" data-papel="">
 <div id="conectando" class="conectando" role="status"><div class="spin"></div><p id="txt-conectando">Conectando à sala…</p></div>
@@ -20,6 +21,10 @@
   <button class="codigo-chip" id="btn-codigo" type="button" title="Copiar código da sala"><small>Sala</small><b id="codigo-sala">······</b><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-copy"/></svg></button>
   <span class="papel-tag" id="papel-tag"></span>
   <span class="esp"></span>
+  <button class="btn-tema" type="button" aria-label="Alternar tema">
+    <svg class="ic ic-lua" aria-hidden="true"><use href="img/icones.svg#i-lua"/></svg>
+    <svg class="ic ic-sol" aria-hidden="true"><use href="img/icones.svg#i-sol"/></svg>
+  </button>
   <span class="contagem"><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-users"/></svg><span id="n-part">1 de 3</span><span class="txt">na sala</span></span>
   <button class="btn preto" id="btn-sair" type="button"><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-exit"/></svg>Sair</button>
 </header>

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/estilo.css">
   <link rel="stylesheet" href="css/animacoes.css">
   <link rel="stylesheet" href="css/transicoes.css">
+  <script src="js/tema.js"></script>
   <script src="js/animacoes/pre.js"></script>
 </head>
 <body>
@@ -24,7 +25,16 @@
       <ul><li><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-check"/></svg><span>Não precisa de conta nem de instalação</span></li><li><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-check"/></svg><span>Câmera e microfone só se você quiser</span></li><li><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-check"/></svg><span>Chat para conversar durante a transmissão</span></li></ul>
     </aside>
   <div class="form-area">
-    <div class="form-topo"><a class="voltar" href="index.html"><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-back"/></svg>Voltar ao início</a><span class="mudo">Quer transmitir? <a href="criar.html">Criar sala</a></span></div>
+    <div class="form-topo">
+      <a class="voltar" href="index.html"><svg class="ic " aria-hidden="true"><use href="img/icones.svg#i-back"/></svg>Voltar ao início</a>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="btn-tema" type="button" aria-label="Alternar tema">
+          <svg class="ic ic-lua" aria-hidden="true"><use href="img/icones.svg#i-lua"/></svg>
+          <svg class="ic ic-sol" aria-hidden="true"><use href="img/icones.svg#i-sol"/></svg>
+        </button>
+        <span class="mudo">Quer transmitir? <a href="criar.html">Criar sala</a></span>
+      </div>
+    </div>
     <div class="form-miolo">
       <span class="etapa">Entrar</span>
       <h2>Qual é o código da sala?</h2>
