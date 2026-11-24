@@ -1,60 +1,78 @@
-// Sistema de tema escuro/claro
+// Sistema de tema escuro/claro (gerenciamento do botão)
 (function() {
-  const CHAVE_TEMA = 'nono-tema';
+  'use strict';
   
-  // Função para obter o tema armazenado ou preferência do sistema
-  function obterTemaInicial() {
-    const temaArmazenado = localStorage.getItem(CHAVE_TEMA);
-    if (temaArmazenado) return temaArmazenado;
-    
-    // Verifica preferência do sistema
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'escuro';
-    }
-    return 'claro';
-  }
+  var CHAVE_TEMA = 'nono:tema';
   
-  // Aplica o tema no documento
   function aplicarTema(tema) {
     if (tema === 'escuro') {
       document.documentElement.setAttribute('data-tema', 'escuro');
     } else {
       document.documentElement.removeAttribute('data-tema');
     }
-    localStorage.setItem(CHAVE_TEMA, tema);
+    
+    try {
+      localStorage.setItem(CHAVE_TEMA, tema);
+    } catch (e) {
+      // localStorage indisponível
+    }
+    
+    atualizarBotoes(tema);
   }
   
-  // Alterna entre claro e escuro
+  function obterTemaAtual() {
+    return document.documentElement.getAttribute('data-tema') === 'escuro' ? 'escuro' : 'claro';
+  }
+  
   function alternarTema() {
-    const temaAtual = document.documentElement.getAttribute('data-tema') === 'escuro' ? 'escuro' : 'claro';
-    const novoTema = temaAtual === 'escuro' ? 'claro' : 'escuro';
+    var temaAtual = obterTemaAtual();
+    var novoTema = temaAtual === 'escuro' ? 'claro' : 'escuro';
     aplicarTema(novoTema);
   }
   
-  // Aplica tema inicial imediatamente (antes da página carregar)
-  aplicarTema(obterTemaInicial());
+  function atualizarBotoes(tema) {
+    var botoes = document.querySelectorAll('.btn-tema');
+    botoes.forEach(function(btn) {
+      btn.setAttribute('aria-pressed', 'false');
+      btn.setAttribute('aria-label', tema === 'escuro' ? 'Mudar para tema claro' : 'Mudar para tema escuro');
+    });
+  }
   
-  // Aguarda o DOM carregar para adicionar listeners
+  function inicializar() {
+    var botoes = document.querySelectorAll('.btn-tema');
+    
+    botoes.forEach(function(btn) {
+      btn.addEventListener('click', alternarTema);
+    });
+    
+    atualizarBotoes(obterTemaAtual());
+    
+    // Escuta mudanças na preferência do sistema
+    if (window.matchMedia) {
+      var mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      
+      var listener = function(e) {
+        try {
+          var armazenado = localStorage.getItem(CHAVE_TEMA);
+          if (!armazenado) {
+            aplicarTema(e.matches ? 'escuro' : 'claro');
+          }
+        } catch (err) {
+          // localStorage indisponível
+        }
+      };
+      
+      if (mediaQuery.addEventListener) {
+        mediaQuery.addEventListener('change', listener);
+      } else if (mediaQuery.addListener) {
+        mediaQuery.addListener(listener);
+      }
+    }
+  }
+  
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', inicializar);
   } else {
     inicializar();
-  }
-  
-  function inicializar() {
-    // Adiciona listener nos botões de tema
-    document.querySelectorAll('.btn-tema').forEach(btn => {
-      btn.addEventListener('click', alternarTema);
-    });
-    
-    // Escuta mudanças na preferência do sistema (opcional)
-    if (window.matchMedia) {
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-        // Só aplica se o usuário não tiver escolhido manualmente
-        if (!localStorage.getItem(CHAVE_TEMA)) {
-          aplicarTema(e.matches ? 'escuro' : 'claro');
-        }
-      });
-    }
   }
 })();
